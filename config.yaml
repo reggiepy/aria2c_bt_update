@@ -3,6 +3,7 @@ app:
   port: 6800
   token:
 log:
+  LogFile: bt-updater.log
   LogWay: console
   LogLevel: info
   LogMaxDays: 0

@@ -8,7 +8,7 @@ import (
 
 var (
 	DefaultConfigPath = "./config.yaml"
-	DefaultConfig     = "app:\n  host: 127.0.0.1\n  port: 6800\n  token:\nlog:\n  LogWay: console\n  LogLevel: info\n  LogMaxDays: 0\n  DisableLogColor: false\nbtTrackerUrl: https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/best_aria2.txt\nhttpProxy:\nfrequency: 60\n"
+	DefaultConfig     = "app:\n  host: 127.0.0.1\n  port: 6800\n  token:\nlog:\n  LogFile: bt-updater.log\n  LogWay: console\n  LogLevel: info\n  LogMaxDays: 0\n  DisableLogColor: false\nbtTrackerUrl: https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/best_aria2.txt\nhttpProxy:\nfrequency: 60\n"
 )
 
 type Config struct {
