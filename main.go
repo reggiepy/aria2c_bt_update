@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aria2_cbt_tracker_updater/common"
 	"aria2_cbt_tracker_updater/pkg/util"
 	"aria2_cbt_tracker_updater/pkg/util/log"
 	"aria2_cbt_tracker_updater/pkg/yaml"
@@ -11,13 +12,18 @@ import (
 
 type Server struct {
 	rpc          *aria2c.JsonRpc
-	config       *Config
+	config       *common.Config
 	btTrackerMd5 string
 }
 
 func NewServer() *Server {
-	config := &Config{}
-	yaml.InitConfigByViper("./config.yaml", config)
+	config := &common.Config{}
+	err := common.CheckConfig()
+	if err != nil {
+		panic(err)
+	}
+	yaml.InitConfigByViper(common.DefaultConfigPath, config)
+
 	logConfig := config.Log
 	log.InitLog(
 		logConfig.LogWay,
@@ -27,7 +33,7 @@ func NewServer() *Server {
 		logConfig.DisableLogColor,
 	)
 	jsonByte, _ := json.Marshal(&config)
-	log.Debug("config: %v\n", string(jsonByte))
+	log.Debug("src: %v\n", string(jsonByte))
 
 	jsonRpcOption := aria2c.JsonRpcOption{
 		ProxyUrl: config.HttpProxy,
