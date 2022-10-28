@@ -1,0 +1,12 @@
+app:
+  host: 127.0.0.1
+  port: 6800
+  token:
+log:
+  LogWay: console
+  LogLevel: info
+  LogMaxDays: 0
+  DisableLogColor: false
+btTrackerUrl: https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/best_aria2.txt
+httpProxy:
+frequency: 60
