@@ -1,0 +1,1 @@
+taskkill /im aria2_cbt_tracker_updater.exe /t /f

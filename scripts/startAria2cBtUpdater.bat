@@ -1,0 +1,1 @@
+call startAria2cBtUpdater.VBS

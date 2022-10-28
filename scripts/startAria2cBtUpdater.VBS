@@ -1,0 +1,1 @@
+CreateObject("WScript.Shell").Run "aria2_cbt_tracker_updater.exe",0
