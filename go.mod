@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/fatedier/beego v1.7.2
-	github.com/reggie/aria2c v0.0.0
+	github.com/reggie/aria2c v0.0.0 // indirect
 	github.com/spf13/viper v1.13.0
 )
 
