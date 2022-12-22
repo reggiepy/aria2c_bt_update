@@ -33,6 +33,7 @@ func InitConfigByViper(filePath string, config interface{}) (err error) {
 
 func CreateConfig(filePath string, config interface{}) (err error) {
 	filePath, _ = util2.AbsFilePath(filePath)
+	fmt.Println(filePath)
 	if util2.FileExists(filePath) {
 		return fmt.Errorf("%v already exists", filePath)
 	}

@@ -18,6 +18,7 @@ func FileExists(filePath string) bool {
 }
 
 func AbsFilePath(filePath string) (dest string, err error) {
+	dest = filePath
 	if !path.IsAbs(filePath) {
 		absFilePath, err := filepath.Abs(filePath)
 		if err != nil {
@@ -25,7 +26,7 @@ func AbsFilePath(filePath string) (dest string, err error) {
 		}
 		dest = absFilePath
 	}
-	return dest, err
+	return
 }
 
 // 方式一通过Write传参
