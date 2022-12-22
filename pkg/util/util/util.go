@@ -3,15 +3,29 @@ package util
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"os"
+	"path"
+	"path/filepath"
 )
 
-func FileExists(path string) bool {
-	_, err := os.Stat(path)
+func FileExists(filePath string) bool {
+	_, err := os.Stat(filePath)
 	if os.IsNotExist(err) {
 		return false
 	}
 	return true
+}
+
+func AbsFilePath(filePath string) (dest string, err error) {
+	if !path.IsAbs(filePath) {
+		absFilePath, err := filepath.Abs(filePath)
+		if err != nil {
+			return filePath, fmt.Errorf("get abs file path error: %v", err)
+		}
+		dest = absFilePath
+	}
+	return dest, err
 }
 
 // 方式一通过Write传参

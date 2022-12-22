@@ -1,14 +1,11 @@
 package common
 
 import (
-	"aria2c_bt_updater/pkg/util"
-	"aria2c_bt_updater/pkg/yaml"
 	"time"
 )
 
 var (
-	DefaultConfigPath = "./config.yaml"
-	DefaultConfig     = "app:\n  host: 127.0.0.1\n  port: 6800\n  token:\nlog:\n  LogFile: bt-updater.log\n  LogWay: console\n  LogLevel: info\n  LogMaxDays: 0\n  DisableLogColor: false\nbtTrackerUrl: https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/best_aria2.txt\nhttpProxy:\nfrequency: 60\n"
+	DefaultConfig = "app:\n  host: 127.0.0.1\n  port: 6800\n  token:\nlog:\n  LogFile: bt-updater.log\n  LogWay: console\n  LogLevel: info\n  LogMaxDays: 0\n  DisableLogColor: false\nbtTrackerUrl: https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/best_aria2.txt\nhttpProxy:\nfrequency: 60\n"
 )
 
 type Config struct {
@@ -45,14 +42,4 @@ type Log struct {
 	// DisableLogColor disables log colors when LogWay == "console" when set to
 	// true. By default, this value is false.
 	DisableLogColor bool `yaml:"disable_log_color"`
-}
-
-func CheckConfig() error {
-	if !util.FileExists(DefaultConfigPath) {
-		err := yaml.CreateConfig(DefaultConfigPath, DefaultConfig)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
