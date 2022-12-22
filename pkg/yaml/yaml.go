@@ -1,7 +1,7 @@
 package yaml
 
 import (
-	"aria2_cbt_tracker_updater/pkg/util"
+	"aria2c_bt_updater/pkg/util"
 	"fmt"
 	"github.com/spf13/viper"
 	"os"

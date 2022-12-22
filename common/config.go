@@ -1,8 +1,8 @@
 package common
 
 import (
-	"aria2_cbt_tracker_updater/pkg/util"
-	"aria2_cbt_tracker_updater/pkg/yaml"
+	"aria2c_bt_updater/pkg/util"
+	"aria2c_bt_updater/pkg/yaml"
 	"time"
 )
 

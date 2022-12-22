@@ -1,4 +1,4 @@
-module aria2_cbt_tracker_updater
+module aria2c_bt_updater
 
 go 1.16
 

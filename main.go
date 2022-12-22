@@ -1,10 +1,10 @@
 package main
 
 import (
-	"aria2_cbt_tracker_updater/common"
-	"aria2_cbt_tracker_updater/pkg/util"
-	"aria2_cbt_tracker_updater/pkg/util/log"
-	"aria2_cbt_tracker_updater/pkg/yaml"
+	"aria2c_bt_updater/common"
+	"aria2c_bt_updater/pkg/util"
+	"aria2c_bt_updater/pkg/util/log"
+	"aria2c_bt_updater/pkg/yaml"
 	"encoding/json"
 	"github.com/reggie/aria2c"
 	"time"
