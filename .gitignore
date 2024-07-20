@@ -17,3 +17,6 @@
 # vendor/
 
 .idea/
+
+aria2c_bt_updater
+aria2c_bt_updater.exe

@@ -21,6 +21,7 @@ const (
 	GetGlobalStat      = "aria2.getGlobalStat"
 	ChangeGlobalOption = "aria2.changeGlobalOption"
 	GetGlobalOption    = "aria2.getGlobalOption"
+	GetVersion         = "aria2.getVersion"
 )
 
 type JsonRpc struct {
