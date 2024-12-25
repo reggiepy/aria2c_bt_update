@@ -164,6 +164,9 @@ func (c *JsonRpc) GenData(action string, params Params, options Options) *Data {
 	if params == nil {
 		params = Params{}
 	}
+	if c.Token != "" {
+		params = append(params, fmt.Sprintf("token:%s", c.Token))
+	}
 	if options != nil {
 		params = append(params, options)
 	}
@@ -173,26 +176,4 @@ func (c *JsonRpc) GenData(action string, params Params, options Options) *Data {
 		Method:  action,
 		Params:  params,
 	}
-}
-
-func (c *JsonRpc) GetBtTracker(btTrackerUrl string, timeout time.Duration) (rc int, btTracker string) {
-	ctx, cancel := context.WithTimeout(c.ctx, timeout)
-	defer cancel()
-
-	req, err := http.NewRequestWithContext(ctx, "GET", btTrackerUrl, nil)
-	if err != nil {
-		return 1, fmt.Sprintf("make req error: %v", err)
-	}
-	resp, err := c.detailClient.Do(req)
-	if err != nil {
-		return 1, fmt.Sprintf("make request error: %v", err)
-	}
-	if resp.StatusCode != 200 {
-		return 1, fmt.Sprintf("response status code: %v", resp.StatusCode)
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return 1, fmt.Sprintf("read body error: %v", err)
-	}
-	return 0, string(body)
 }

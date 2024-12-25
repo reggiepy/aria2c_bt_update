@@ -17,7 +17,17 @@ go mod tidy
 ## Usage
 
 ```bash
-go run main.go
+go run cmd/aria2c_bt_update/main.go
+```
+
+build
+```bash
+SET CGO_ENABLED=0
+SET GOOS=windows
+SET GOARCH=amd64
+# go env -w CGO_ENABLED=0 GOOS=windows  GOARCH=amd64
+go build github.com/reggiepy/aria2c_bt_updater/cmd/aria2c_bt_update
+go build -ldflags="-s -w" github.com/reggiepy/aria2c_bt_updater/cmd/aria2c_bt_update
 ```
 
 ## Architecture
