@@ -1,8 +1,9 @@
 package boot
 
 import (
-	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/signailUtils"
 	"time"
+
+	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/signailUtils"
 )
 
 func Boot() {

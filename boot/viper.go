@@ -2,6 +2,7 @@ package boot
 
 import (
 	"fmt"
+
 	"github.com/gookit/goutil/jsonutil"
 	"github.com/reggiepy/aria2c_bt_updater/global"
 
@@ -38,8 +39,8 @@ func Viper() (*viper.Viper, error) {
 	if err != nil {
 		return nil, err
 	}
-	//allSettings := v.AllSettings()
-	//fmt.Printf("Current viper settings: %+v\n", allSettings)
+	// allSettings := v.AllSettings()
+	// fmt.Printf("Current viper settings: %+v\n", allSettings)
 	return v, nil
 }
 

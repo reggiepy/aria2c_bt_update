@@ -11,9 +11,7 @@ const (
 	port = 6800
 )
 
-var (
-	jsonRpcOption = JsonRpcOption{}
-)
+var jsonRpcOption = JsonRpcOption{}
 
 func TestGetGlobalStat(t *testing.T) {
 	json_rpc := NewJsonRpc(host, port, "", jsonRpcOption)

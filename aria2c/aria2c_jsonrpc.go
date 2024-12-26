@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 var (
@@ -67,8 +68,10 @@ func NewJsonRpc(host string, port int, token string, options JsonRpcOption) *Jso
 	}
 }
 
-type Params []interface{}
-type Options map[string]interface{}
+type (
+	Params  []interface{}
+	Options map[string]interface{}
+)
 
 type Data struct {
 	Jsonrpc string `json:"jsonrpc"`

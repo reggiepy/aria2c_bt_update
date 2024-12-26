@@ -2,7 +2,7 @@ package config
 
 func DefaultConfig() *Config {
 	return &Config{
-		Aria2c: []Aria2c{Aria2c{
+		Aria2c: []Aria2c{{
 			Host:  "127.0.0.1", // 默认绑定到本地地址
 			Port:  6800,        // 默认端口号
 			Token: "",          // 为空，未配置 token
@@ -18,8 +18,8 @@ func DefaultConfig() *Config {
 		},
 		System: System{
 			HttpProxy: "", // 默认没有设置 HTTP 代理
-			//配置来源：https://github.com/XIU2/TrackersListCollection
-			//动漫：https://github.com/DeSireFire/animeTrackerList
+			// 配置来源：https://github.com/XIU2/TrackersListCollection
+			// 动漫：https://github.com/DeSireFire/animeTrackerList
 			BtTrackerUrl: []string{
 				//"https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/best_aria2.txt",
 				"https://cf.trackerslist.com/all.txt",

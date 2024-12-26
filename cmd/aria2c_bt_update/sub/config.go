@@ -2,6 +2,8 @@ package sub
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/gookit/goutil/fsutil"
 	"github.com/gookit/goutil/jsonutil"
 	"github.com/reggiepy/aria2c_bt_updater/boot"
@@ -9,7 +11,6 @@ import (
 	"github.com/reggiepy/aria2c_bt_updater/global"
 	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/enumUtils"
 	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/yamlutil"
-	"os"
 
 	"github.com/spf13/viper"
 
@@ -22,11 +23,9 @@ type ConfigConfig struct {
 	Config string
 }
 
-var (
-	configConfig = ConfigConfig{
-		Format: enumUtils.NewEnum([]string{"humanReadable", "simple"}, "humanReadable"),
-	}
-)
+var configConfig = ConfigConfig{
+	Format: enumUtils.NewEnum([]string{"humanReadable", "simple"}, "humanReadable"),
+}
 
 func init() {
 	configShowCmd.Flags().Var(configConfig.Format, "format", "humanReadable | simple")

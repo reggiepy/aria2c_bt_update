@@ -2,10 +2,11 @@ package sub
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/gookit/goutil/fsutil"
 	"github.com/gookit/goutil/jsonutil"
 	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/signailUtils"
-	"os"
 
 	"github.com/reggiepy/aria2c_bt_updater/boot"
 	"github.com/reggiepy/aria2c_bt_updater/global"
@@ -46,8 +47,8 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		//data, _ := jsonutil.EncodeString(global.Config)
-		//fmt.Println("Config: ", data)
+		// data, _ := jsonutil.EncodeString(global.Config)
+		// fmt.Println("Config: ", data)
 		global.Logger, global.LoggerCleanup = boot.Logger()
 		signailUtils.OnExit(func() {
 			global.LoggerCleanup() // 确保在程序退出时刷新日志缓冲区
@@ -97,5 +98,4 @@ func Execute() {
 }
 
 func initConfig() {
-
 }

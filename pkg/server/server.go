@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/reggiepy/aria2c_bt_updater/global"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/reggiepy/aria2c_bt_updater/global"
+	"go.uber.org/zap"
 
 	"github.com/gookit/goutil/byteutil"
 	"github.com/reggiepy/aria2c_bt_updater/aria2c"
