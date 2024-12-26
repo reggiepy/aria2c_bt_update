@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 config.yaml
+*.log
 ### Go template
 # Binaries for programs and plugins
 *.exe
