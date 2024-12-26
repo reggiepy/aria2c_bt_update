@@ -2,11 +2,11 @@ package config
 
 func DefaultConfig() *Config {
 	return &Config{
-		Aria2c: Aria2c{
+		Aria2c: []Aria2c{Aria2c{
 			Host:  "127.0.0.1", // 默认绑定到本地地址
 			Port:  6800,        // 默认端口号
 			Token: "",          // 为空，未配置 token
-		},
+		}},
 		Log: Log{
 			File:       "./logs/aria2c_bt_update.log", // 默认日志文件位置
 			MaxSize:    5,                             // 最大日志文件大小限制为 5MB

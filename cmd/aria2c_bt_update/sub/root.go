@@ -3,6 +3,7 @@ package sub
 import (
 	"fmt"
 	"github.com/gookit/goutil/fsutil"
+	"github.com/gookit/goutil/jsonutil"
 	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/signailUtils"
 	"os"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/reggiepy/aria2c_bt_updater/pkg/server"
 	"github.com/reggiepy/aria2c_bt_updater/pkg/version"
 
-	"github.com/reggiepy/aria2c_bt_updater/aria2c"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -46,7 +46,8 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println("Config: ", global.Config.ToJson())
+		//data, _ := jsonutil.EncodeString(global.Config)
+		//fmt.Println("Config: ", data)
 		global.Logger, global.LoggerCleanup = boot.Logger()
 		signailUtils.OnExit(func() {
 			global.LoggerCleanup() // 确保在程序退出时刷新日志缓冲区
@@ -58,24 +59,31 @@ var rootCmd = &cobra.Command{
 				return err
 			}
 		}
-		jsonRpcOption := aria2c.JsonRpcOption{
-			ProxyUrl: global.Config.System.HttpProxy,
+
+		clientMap := map[string]struct{}{}
+		for idx, aria2cConfig := range global.Config.Aria2c {
+			name := fmt.Sprintf("%s:%d", aria2cConfig.Host, aria2cConfig.Port)
+			fmt.Printf("%d. Start %s\n", idx+1, name)
+			configBytes, _ := jsonutil.Encode(aria2cConfig)
+			var config server.Aria2c
+			_ = jsonutil.Decode(configBytes, &config)
+			cfg := server.NewConfig(
+				server.WithHttpProxy(global.Config.System.HttpProxy),
+				server.WithBtTrackerUrl(global.Config.System.BtTrackerUrl),
+				server.WithFrequency(global.Config.System.Frequency),
+				server.WithAria2c(config),
+			)
+			s := server.NewServer(*cfg)
+			clientName := s.ClientName()
+			if _, ok := clientMap[clientName]; ok {
+				fmt.Println("client already exists")
+				continue
+			}
+			clientMap[clientName] = struct{}{}
+			go func() {
+				s.Run()
+			}()
 		}
-		jsonRpc := aria2c.NewJsonRpc(
-			global.Config.Aria2c.Host,
-			global.Config.Aria2c.Port,
-			global.Config.Aria2c.Token,
-			jsonRpcOption,
-		)
-		cfg := server.Config{
-			HttpProxy:    global.Config.System.HttpProxy,
-			BtTrackerUrl: global.Config.System.BtTrackerUrl,
-			Frequency:    global.Config.System.Frequency,
-		}
-		s := server.NewServer(jsonRpc, cfg)
-		go func() {
-			s.Run()
-		}()
 		boot.Boot()
 		return nil
 	},

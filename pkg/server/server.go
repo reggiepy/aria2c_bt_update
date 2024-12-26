@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/reggiepy/aria2c_bt_updater/global"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
@@ -14,23 +15,31 @@ import (
 	"github.com/reggiepy/aria2c_bt_updater/aria2c"
 )
 
-type Config struct {
-	HttpProxy    string        `yaml:"http_proxy,inline" json:"http_proxy"`
-	BtTrackerUrl []string      `yaml:"bt_tracker_url,inline" json:"bt_tracker_url"`
-	Frequency    time.Duration `yaml:"frequency,inline" json:"frequency"`
-}
-
 type Server struct {
+	cfg Config
+
 	jsonRpc      *aria2c.JsonRpc
-	cfg          Config
 	btTrackerMd5 string
 }
 
-func NewServer(jsonRpc *aria2c.JsonRpc, cfg Config) *Server {
+func NewServer(cfg Config) *Server {
+	jsonRpcOption := aria2c.JsonRpcOption{
+		ProxyUrl: global.Config.System.HttpProxy,
+	}
+	jsonRpc := aria2c.NewJsonRpc(
+		cfg.Aria2c.Host,
+		cfg.Aria2c.Port,
+		cfg.Aria2c.Token,
+		jsonRpcOption,
+	)
 	return &Server{
 		jsonRpc: jsonRpc,
 		cfg:     cfg,
 	}
+}
+
+func (s *Server) ClientName() string {
+	return fmt.Sprintf("%s:%d %s", s.cfg.Aria2c.Host, s.cfg.Aria2c.Port, s.cfg.Aria2c.Token)
 }
 
 func (s *Server) CheckRpc() {
@@ -38,7 +47,7 @@ func (s *Server) CheckRpc() {
 		if s.IsRunning() {
 			break
 		}
-		zap.L().Info(fmt.Sprintf("服务未运行，重试 %d...", cnt))
+		zap.L().Info(fmt.Sprintf("服务未运行，重试 %d...", cnt), zap.String("client", s.ClientName()))
 		time.Sleep(time.Second)
 	}
 	return
@@ -49,7 +58,7 @@ func (s *Server) RefreshBtTracker() {
 	for {
 		result := s.jsonRpc.Post(aria2c.GetGlobalOption, nil, nil, aria2c.NewRpcOption())
 		if result.Message == "failed" {
-			zap.L().Info(fmt.Sprintf("Failed to get global options from RPC, retrying..."))
+			zap.L().Info(fmt.Sprintf("Failed to get global options from RPC, retrying..."), zap.String("client", s.ClientName()))
 			time.Sleep(time.Second)
 			continue
 		}
@@ -57,18 +66,18 @@ func (s *Server) RefreshBtTracker() {
 		// Parse the result to get current BT Tracker
 		data, ok := result.Result.(map[string]interface{})
 		if !ok {
-			zap.L().Info(fmt.Sprintf("Failed to parse result into map[string]interface{}"))
+			zap.L().Info(fmt.Sprintf("Failed to parse result into map[string]interface{}"), zap.String("client", s.ClientName()))
 			continue
 		}
 
 		btTracker, ok := data["bt-tracker"].(string)
 		if !ok {
-			zap.L().Info(fmt.Sprintf("BT tracker is not a string"))
+			zap.L().Info(fmt.Sprintf("BT tracker is not a string"), zap.String("client", s.ClientName()))
 			continue
 		}
 
 		btTrackerMd5 := string(byteutil.Md5(btTracker))
-		zap.L().Info(fmt.Sprintf("Current BT tracker MD5: %v", btTrackerMd5))
+		zap.L().Info(fmt.Sprintf("Current BT tracker MD5: %v", btTrackerMd5), zap.String("client", s.ClientName()))
 		s.btTrackerMd5 = btTrackerMd5
 		break
 	}
@@ -79,15 +88,15 @@ func (s *Server) UpdateBtTrackerUrls() {
 	for index, url := range s.cfg.BtTrackerUrl {
 		btTracker, err := s.GetBtTracker(url, 60*time.Second)
 		if err != nil {
-			zap.L().Info(fmt.Sprintf("Failed to get BT Tracker from URL: %s", url))
+			zap.L().Info(fmt.Sprintf("Failed to get BT Tracker from URL: %s", url), zap.String("client", s.ClientName()))
 			continue
 		}
-		zap.L().Info(fmt.Sprintf("BtTracker %d (%s): %s", index, url, btTracker))
+		zap.L().Info(fmt.Sprintf("BtTracker %d (%s): %s", index, url, btTracker), zap.String("client", s.ClientName()))
 		err = s.SetBTTracker(btTracker)
 		if err != nil {
-			zap.L().Error("Failed to set BT Tracker", zap.String("tracker", btTracker), zap.Error(err))
+			zap.L().Error("Failed to set BT Tracker", zap.String("client", s.ClientName()), zap.Error(err))
 		} else {
-			zap.L().Info("Updated BT Tracker successfully", zap.String("url", url))
+			zap.L().Info("Updated BT Tracker successfully", zap.String("client", s.ClientName()), zap.String("url", url))
 		}
 	}
 }
@@ -115,7 +124,7 @@ func (s *Server) SetBTTracker(btTracker string) error {
 	}
 
 	// Log the response
-	zap.L().Info("Change BT Tracker", zap.String("response", string(jsonResult)))
+	zap.L().Info("Change BT Tracker", zap.String("client", s.ClientName()), zap.String("response", string(jsonResult)))
 
 	// Check the response and update the tracker if successful
 	if result.Message == "success" {
@@ -126,6 +135,7 @@ func (s *Server) SetBTTracker(btTracker string) error {
 
 	// Log error if update fails
 	zap.L().Error("Failed to update BT Tracker",
+		zap.String("client", s.ClientName()),
 		zap.String("message", result.Message),
 		zap.String("btTracker", btTracker))
 
@@ -135,13 +145,13 @@ func (s *Server) SetBTTracker(btTracker string) error {
 func (s *Server) IsRunning() bool {
 	result := s.jsonRpc.Post(aria2c.GetVersion, nil, nil, aria2c.NewRpcOption())
 	if result.Message == "failed" {
-		zap.L().Error("RPC service is not running")
+		zap.L().Error("RPC service is not running", zap.String("client", s.ClientName()))
 		return false
 	}
-	data, ok := result.Result.(map[string]interface{})
-	if !ok || data["version"] == "" {
-		zap.L().Error("Failed to retrieve RPC version")
-		return false
+	if data, ok := result.Result.(map[string]interface{}); ok {
+		zap.L().Error("get aria2c version successfully", zap.String("client", s.ClientName()), zap.String("version", data["version"].(string)))
+	} else {
+		zap.L().Error("Failed to retrieve RPC version", zap.String("client", s.ClientName()))
 	}
 	return true
 }

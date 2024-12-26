@@ -2,6 +2,7 @@ package boot
 
 import (
 	"fmt"
+	"github.com/gookit/goutil/jsonutil"
 	"github.com/reggiepy/aria2c_bt_updater/global"
 
 	"github.com/fsnotify/fsnotify"
@@ -29,15 +30,16 @@ func Viper() (*viper.Viper, error) {
 		if err != nil {
 			fmt.Printf("Config file changed, but failed to bind: %v", err.Error())
 		} else {
-			fmt.Println("Config file changed: ", global.Config.ToJson())
+			data, _ := jsonutil.EncodeString(global.Config)
+			fmt.Println("Config file changed: ", data)
 		}
 	})
 	err := BindConfig(v)
 	if err != nil {
 		return nil, err
 	}
-	allSettings := v.AllSettings()
-	fmt.Printf("Current viper settings: %+v\n", allSettings)
+	//allSettings := v.AllSettings()
+	//fmt.Printf("Current viper settings: %+v\n", allSettings)
 	return v, nil
 }
 

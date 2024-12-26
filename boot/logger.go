@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/reggiepy/aria2c_bt_updater/global"
-	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/logUtils/zapLogger"
+	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/logutil/zapLogger"
 	"go.uber.org/zap"
 )
 

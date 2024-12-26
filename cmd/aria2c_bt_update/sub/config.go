@@ -3,10 +3,12 @@ package sub
 import (
 	"fmt"
 	"github.com/gookit/goutil/fsutil"
+	"github.com/gookit/goutil/jsonutil"
 	"github.com/reggiepy/aria2c_bt_updater/boot"
 	"github.com/reggiepy/aria2c_bt_updater/config"
 	"github.com/reggiepy/aria2c_bt_updater/global"
 	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/enumUtils"
+	"github.com/reggiepy/aria2c_bt_updater/pkg/goutils/yamlutil"
 	"os"
 
 	"github.com/spf13/viper"
@@ -59,7 +61,16 @@ var configShowCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		data := global.Config.ToJson()
+		configFormat := configConfig.Format.String()
+
+		var data string
+		switch configFormat {
+		case "humanReadable":
+			data, _ = jsonutil.EncodeString(global.Config)
+		case "simple":
+			dataBytes, _ := jsonutil.Encode(global.Config)
+			data = string(dataBytes)
+		}
 		fmt.Println(data)
 		return nil
 	},
@@ -76,14 +87,13 @@ var configGenerateCmd = &cobra.Command{
 		}
 
 		configFileExt := fsutil.Extname(configFile)
-
 		defaultConfig := config.DefaultConfig()
 		configString := ""
 		switch configFileExt {
 		case "yaml":
-			configString, _ = defaultConfig.ToYaml()
+			configString, _ = yamlutil.EncodeString(defaultConfig)
 		case "json":
-			configString = defaultConfig.ToJson()
+			configString, _ = jsonutil.EncodeString(defaultConfig)
 		default:
 			return fmt.Errorf("unsupported config file extension: %s", configFileExt)
 		}
