@@ -27,16 +27,14 @@ func Viper() (*viper.Viper, error) {
 	v.WatchConfig()
 	v.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("Config file changed: ", e.String())
-		err := BindConfig(v)
-		if err != nil {
+		if err := BindConfig(v); err != nil {
 			fmt.Printf("Config file changed, but failed to bind: %v", err.Error())
 		} else {
 			data, _ := jsonutil.EncodeString(global.Config)
 			fmt.Println("Config file changed: ", data)
 		}
 	})
-	err := BindConfig(v)
-	if err != nil {
+	if err := BindConfig(v); err != nil {
 		return nil, err
 	}
 	// allSettings := v.AllSettings()
